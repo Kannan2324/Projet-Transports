@@ -1,0 +1,25 @@
+###### URL des jeux de données d'intérêts
+
+Déclaration de pertes:
+
+	https://data.sncf.com/explore/dataset/objets-trouves-gares/
+
+Liste des gares française:
+	
+	https://data.sncf.com/explore/dataset/liste-des-gares/
+
+Fréquentation des gares:
+
+	https://data.sncf.com/explore/dataset/frequentation-gares/
+
+Incidents de sécurité:
+
+	https://data.sncf.com/explore/dataset/incidents-securite/
+
+Cartes de restaurations des bars TGV:
+
+	https://data.sncf.com/explore/dataset/menus-des-bars-tgv/information/
+
+Objets Trouvés:
+
+	https://data.sncf.com/explore/dataset/objets-trouves-restitution/table/
