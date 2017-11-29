@@ -1,0 +1,36 @@
+#########################################################
+#################     Process Book     ##################
+#########################################################
+
+Sébastien Delolme-Sabatier
+ShangNong Hu
+Valentin Reymond
+
+16/11
+
+Premier cours sur le projet de visusalisation de données sur les transports:
+
+			- Consitution du groupe d'étudiants
+			- Choix du sujet en accord avec le sujet "Transports"
+			- Travail sur des données en accès libre de la SNCF
+
+	==> Liste de plusieurs datasets d'intérêts ==> réflexion des questions quie peuvent se poser
+	==> Choix de quatre datasets parmis la liste de datasets:
+
+			- Liste des gares de France
+			- Fréquentation des gares de France
+			- Déclaration de pertes d'objets dans les gares
+			- Objets trouvés dans les gares
+
+23/11
+
+Objectif: avoir désigné plusieurs prototype de visualisation sur les "Design Sheets"
+
+	==> Première visusalisation par une approche globale: vision de la France avec les différentes fréquentation des gares
+		représentée par des cercles de diamètres différents.
+	==> Quand on clique sur une région, zoom sur la région, zoom possible sur département puis ville, puis quartier.
+	==> Infos diverses sur des gares précises, comme la quantités d'objets perdus dans les gares en fonction de la fréquentation
+
+Autres idées? A réfléchir
+
+
