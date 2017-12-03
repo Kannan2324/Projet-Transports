@@ -1,0 +1,46 @@
+# Peer Review
+---------------------
+
+
+L'objectif de cette peer-review est d'avoir un regard critique sur
+un projet d'un autre groupe. Cette analyse permettra de leurs données des idées,
+et de pouvoir également avoir un regard critique sur notre projet et notre avancée.
+
+Le projet qui nous a été attribué est le projet du Groupe 17:
+"_Study of SNCF Punctuality Problems_" avec Sumaira Javaid,
+Thomas Diot et Jeremy Ganofsky.
+
+
+### I) Problème
+
+Les trains proposés par la SNCF ont souvent du retard, en particulier les trains TER.
+Les étudiants de ce projet s'intéressent à savoir quels peuvent être les raisons de ces retards,
+comme par exemple des accidents qui auraient pu survenir ou encore des incidents techniques
+retardant ou empêchant les départs. Ils se sont donc intéressé à la potentielle corrélation 
+entre ces problèmes et les retards des trains au niveau régional et au niveau national.
+
+Le problème est intéressant à creuser au vu de tout les articles relatat de ces retards
+fréquents. Ajouter des visualisations intéractives aux visualisations descriptives est
+un bon point.
+==> Direction intéressante à creuser: trouver des données de mouvements de grève à la SCNF, 
+et essayer de les corréler avec les retards.
+
+### II) Etat de l'art
+
+A chercher
+
+###III) Proposition
+
+* **Les +:**
+	* Sujet intéressant et d'actualité
+	* Proposition de visualisations intéractives et non descriptives
+	* De nombreuses références expliquant le problème.
+
+* **Les -:**
+	* Données depuis 2014, il aurait été peut-être préférable de faire à  	  une plus grand échelle pour
+	  voir si, par exemple, il y a 20 ans il y avait autant de retards 	  ou non (mais possible manque de données)
+	* Descriptif des visusalisations faites, mais il manque des             	  screenshots représentant leurs idées pour des
+	  soucis de clareté.
+
+* **Ce qu'on aimerai voir:**
+	* Les données sur une durée plus grande, pas seulement depuis 2014
