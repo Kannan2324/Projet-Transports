@@ -45,3 +45,9 @@ Objectif de travail de projet: Peer review
 Première lecture de l'article, et premières critiques
 
 
+07/12
+
+Objectif de la séance: - Retour sur l'analyse de notre Peer-review par le groupe 17
+					   - Début du code pour le projet
+
+
