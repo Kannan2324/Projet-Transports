@@ -59,7 +59,7 @@
 		var geoPath = d3.geoPath()
 		 .projection(projection)
 		 .pointRadius(1);
-		
+
 		d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions.geojson", function(json) {
 			svg.selectAll("path")
 				.data(json.features)
@@ -74,13 +74,13 @@
 					});
 					tooltip.classed('hidden', false)
 						.attr('style', 'left:' + (mouse[0] + 15) +
-							'px; top:' + (mouse[1] - 35) + 'px')
+							'px; top:' + (mouse[1] - 35) + 'px;background-color: #f88')
 					//console.log(d.properties.nom)
 						.html(d.properties.nom);
 					})
 				.on('mouseout', function() {
 					tooltip.classed('hidden', true);
-					});;
+					});
 			
 			d3.json("https://raw.githubusercontent.com/Kannan2324/Projet-Transports/master/data/liste-des-gares.geojson", function(jsonGare) {
 				var liste_gare = svg.append("svg");
@@ -90,6 +90,19 @@
 				.append("path")
 				.attr("fill","#b42e6b")
 				.attr("d", geoPath)
+				.on('mousemove', function(d) {
+					console.log(d);
+					var mouse = d3.mouse(svg.node()).map(function(d) {
+						return parseInt(d);
+					});
+					tooltip.classed('hidden', false)
+						.attr('style', 'left:' + (mouse[0] + 15) +
+							'px; top:' + (mouse[1] - 35) + 'px;background-color: #fff')
+						.html(d.properties.libelle_gare);
+					})
+				.on('mouseout', function() {
+					tooltip.classed('hidden', true);
+					});;
 			})
 		});
 		
