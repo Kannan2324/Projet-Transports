@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <style>
+    body { margin:0;position:fixed;top:0;right:0;bottom:0;left:0; }
+    
+    .province {
+        fill: #888;
+        stroke: #fff;
+        stroke-width: 1px;
+    }
+    
+    .province:hover {
+        fill: #7f7f7f;
+    }
+    .hidden {
+        display: none;
+    }
+    div.tooltip {
+        color: #222;
+        background-color: #fff;
+        padding: .5em;
+        text-shadow: #f5f5f5 0 1px 0;
+        border-radius: 2px;
+        opacity: 0.9;
+        position: absolute;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <script>
+  var width = 700;
+  var height = 580;
+  var svg = d3.select( "body" )
+    .append( "svg" )
+    .attr( "width", width )
+    .attr( "height", height );
+  var projection = d3.geoConicConformal()
+    .center([2.454071, 46.279229])
+    .scale(2300);
+  var path = d3.geoPath() // d3.geo.path avec d3 version 3
+    .projection(projection);
+  var color = d3.scaleLinear().domain([1,length])
+    .interpolate(d3.interpolateHcl)
+    .range([d3.rgb(255,255,255), d3.rgb(0,193,6)]);
+  var tooltip = d3.select('body').append('div')
+    .attr('class', 'hidden tooltip');
+
+    
+    color.domain([0, 200]);
+  
+    d3.json("https://raw.githubusercontent.com/Kannan2324/Projet-Transports/master/data/liste-des-gares.geojson", function(json) {
+      
+      
+      
+      //On fusionne les donnees avec le GeoJSON des regions
+      
+    
+        //Nom de l'etat
+        
+        for (var j = 0; j < json.features.length; j++) {
+      
+          var jsonState = json.features[j].properties.nom;
+          
+        }
+    
+      // update the elements
+      function updateViz(value) {
+        //console.log("update " + weeksArray);
+       
+        drawMap(value);
+      }
+      
+      function drawMap(currentWeek) {
+        province = svg.selectAll(".province")
+          .data(json.features);
+        // code en cas de mise a jour de la carte / de changement de semaine
+        province
+          .attr("class", "update")
+          .style("fill", function(d) {
+                
+            var value = d.properties.value;
+            if (value != undefined){
+              value = Number(d.properties.value[weeksArray[currentWeek]]);
+              return color(value);
+            } else {
+              // si pas de valeur alors en gris
+              d.properties.value = undefined
+              return "#888";
+            };          
+          })
+          .on('mousemove', function(d) {
+            var mouse = d3.mouse(svg.node()).map(function(d) {
+              return parseInt(d);
+            });
+            tooltip.classed('hidden', false)
+              .attr('style', 'left:' + (mouse[0] + 15) +
+                'px; top:' + (mouse[1] - 35) + 'px')
+              .html(d.properties.nom+": <b>"+d.properties.value[weeksArray[currentWeek]]+"</b>");
+          })
+          .on('mouseout', function() {
+            tooltip.classed('hidden', true);
+          });
+        // code pour la creation de la carte quand les donnees sont chargees la 1e fois.
+        province.enter()
+          .append("path")
+          //.attr("class", "enter")
+          .attr('class', function(d) {
+            return 'province ' + d.properties.value;
+          })
+          .attr('d', path)
+          .style("fill", function(d) {
+                
+            var value = d.properties.value;
+            
+            if (value != undefined){
+              value = Number(d.properties.value[weeksArray[currentWeek]]);
+              return color(value);
+            } else {
+              // si pas de valeur alors en gris
+              d.properties.value = undefined
+              return "#888";
+            };          
+          })
+          .on('mousemove', function(d) {
+            var mouse = d3.mouse(svg.node()).map(function(d) {
+              return parseInt(d);
+            });
+            tooltip.classed('hidden', false)
+              .attr('style', 'left:' + (mouse[0] + 15) +
+                'px; top:' + (mouse[1] - 35) + 'px')
+            //console.log(d.properties.nom)
+              .html(d.properties.nom);
+          })
+          .on('mouseout', function() {
+            tooltip.classed('hidden', true);
+          });
+      }
+  
+      updateViz(1);
+    });
+  ;
+  </script>
+</body>
