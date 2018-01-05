@@ -1,63 +1,64 @@
 <!DOCTYPE html>
 <head>
-  <meta charset="utf-8">
-  <script src="https://d3js.org/d3.v4.min.js"></script>
-  <style>
-    body { margin:0;position:fixed;top:0;right:0;bottom:0;left:0; }
-  </style>
+	<meta charset="utf-8">
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<style>
+		body { margin:0;position:fixed;top:0;right:0;bottom:0;left:0; }
+	</style>
 </head>
 
 <body>
-  <script>
-    var width = 700,
-        height = 580;
+	<script>
+		var width = 700,
+				height = 580;
 
-    var svg = d3.select( "body" )
-      .append( "svg" )
-      .attr( "width", width )
-      .attr( "height", height );
-    
-    var color = d3.scaleQuantize()
-         .range(["rgb(237,248,233)", "rgb(186,228,179)",
-         "rgb(116,196,118)", "rgb(49,163,84)", "rgb(0,109,44)"]);
-    
-    //On centre sur la France
-    var projection = d3.geoConicConformal()
-          .center([2.454071, 46.279229])
-          .scale(2800)
-          // sans la commande enlève la Corse mais centre la France!
-          //.translate([width/2, height/2]);
-    
+		var svg = d3.select( "body" )
+			.append( "svg" )
+			.attr( "width", width )
+			.attr( "height", height );
+		
+		var color = d3.scaleQuantize()
+				 .range(["rgb(237,248,233)", "rgb(186,228,179)",
+				 "rgb(116,196,118)", "rgb(49,163,84)", "rgb(0,109,44)"]);
+		
+		//On centre sur la France
+		var projection = d3.geoConicConformal()
+			.center([2.454071, 46.279229])
+			.scale(2800)
+			// sans la commande enlève la Corse mais centre la France!
+			//.translate([width/2, height/2]);
+		
 
-    var path = d3.geoPath() // d3.geo.path avec d3 version 3
-                 .projection(projection);
-    
-    var tooltip = d3.select('body')
-          .append('div')
-          .attr('class', 'hidden tooltip');
-    var geoPath = d3.geoPath()
-     .projection(projection)
-     .pointRadius(1);
-    
-    d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions.geojson", function(json) {
-      svg.selectAll("path")
-        .data(json.features)
-        .enter()
-        .append("path")
-        .attr("d",path);
-      
-      d3.json("https://raw.githubusercontent.com/Kannan2324/Projet-Transports/master/data/liste-des-gares.geojson", function(jsonGare) {
-        var liste_gare = svg.append("svg");
-        liste_gare.selectAll("path")
-        .data(jsonGare.features)
-        .enter()
-        .append("path")
-        .attr("fill","#900")
-        .attr("stroke", "#999")
-        .attr("d", geoPath)
-    })
-    });
-    
-  </script>
+		var path = d3.geoPath() // d3.geo.path avec d3 version 3
+								 .projection(projection);
+		
+		var tooltip = d3.select('body')
+					.append('div')
+					.attr('class', 'hidden tooltip');
+		var geoPath = d3.geoPath()
+		 .projection(projection)
+		 .pointRadius(1);
+		
+		d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions.geojson", function(json) {
+			svg.selectAll("path")
+				.data(json.features)
+				.enter()
+				.append("path")
+				.attr("fill","#888")
+				.attr("stroke","#fff")
+				.attr("d",path);
+			
+			d3.json("https://raw.githubusercontent.com/Kannan2324/Projet-Transports/master/data/liste-des-gares.geojson", function(jsonGare) {
+				var liste_gare = svg.append("svg");
+				liste_gare.selectAll("path")
+				.data(jsonGare.features)
+				.enter()
+				.append("path")
+				.attr("fill","#b42e6b")
+				.attr("d", geoPath)
+			})
+		});
+		
+	</script>
 </body>
 
