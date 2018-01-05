@@ -30,10 +30,7 @@
 </head>
 
 <body>
-  <div>
-    <input id="slider" type="range" value="1" min="1" max="52" step="1" />
-    <span id="week"></span>
-  </div>
+
 
   <script>
   var width = 700;
@@ -52,35 +49,29 @@
     .range([d3.rgb(255,255,255), d3.rgb(0,193,6)]);
   var tooltip = d3.select('body').append('div')
     .attr('class', 'hidden tooltip');
-  d3.csv("https://lyondataviz.github.io/teaching/lyon1-m2/2017/data/GrippeFrance2014.csv", function(data) {
+
     
     color.domain([0, 200]);
   
     d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions.geojson", function(json) {
       
-      var weeksArray = Object.keys(data[0]);
+      
       
       //On fusionne les donnees avec le GeoJSON des regions
-      for (var i = 0; i < data.length; i++) {
+      
     
         //Nom de l'etat
-        var dataState = data[i].region;
+        
         for (var j = 0; j < json.features.length; j++) {
       
           var jsonState = json.features[j].properties.nom;
-          if (dataState == jsonState) {
-      
-            //On injecte la/les valeur(s) de l'Etat dans le json
-            json.features[j].properties.value = data[i];
-            //Pas besoin de chercher plus loin
-            break;
-          }
+          
         }
-      };
+    
       // update the elements
       function updateViz(value) {
         //console.log("update " + weeksArray);
-        d3.select('#week').html(weeksArray[value]);
+       
         drawMap(value);
       }
       
@@ -142,18 +133,16 @@
             tooltip.classed('hidden', false)
               .attr('style', 'left:' + (mouse[0] + 15) +
                 'px; top:' + (mouse[1] - 35) + 'px')
-              .html(d.properties.nom+": <b>"+d.properties.value[weeksArray[currentWeek]]+"</b>");
+            //console.log(d.properties.nom)
+              .html(d.properties.nom);
           })
           .on('mouseout', function() {
             tooltip.classed('hidden', true);
           });
       }
   
-      d3.select("#slider").on("input", function() {
-        updateViz(+this.value);
-      });
       updateViz(1);
     });
-  });
+  ;
   </script>
 </body>
