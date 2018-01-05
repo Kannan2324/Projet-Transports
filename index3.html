@@ -36,16 +36,17 @@
           .append('div')
           .attr('class', 'hidden tooltip');
     var geoPath = d3.geoPath()
-     .projection(projection);
+     .projection(projection)
+     .pointRadius(1);
     
-    d3.json("france.json", function(json) {
+    d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions.geojson", function(json) {
       svg.selectAll("path")
         .data(json.features)
         .enter()
         .append("path")
         .attr("d",path);
       
-      d3.json("liste-gare.json", function(jsonGare) {
+      d3.json("https://raw.githubusercontent.com/Kannan2324/Projet-Transports/master/data/liste-des-gares.geojson", function(jsonGare) {
         var liste_gare = svg.append("svg");
         liste_gare.selectAll("path")
         .data(jsonGare.features)
