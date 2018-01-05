@@ -1,10 +1,271 @@
-<!doctype html>
-<html lang="fr">
+<!DOCTYPE html>
 <head>
+  <title>GF2014-hduportet</title>
   <meta charset="utf-8">
-  <title>Lost and Found in SNCF</title>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+	<script src="http://d3js.org/topojson.v1.min.js"></script>
+	<script src="http://d3js.org/queue.v1.min.js"></script>
+<style>
+  		.axis path,
+  		.axis tick,
+	  	.axis line {
+	      	fill: none;
+	      	stroke: #dddddd;
+	  	}
+
+	  	.axis text {
+	      	font-size: 14px;
+	      	fill: #AAAAAA;
+	      	font-weight: 400;
+	  	}
+
+	  	.legendTitle {
+	      	font-size: 15px;
+	      	fill: #4F4F4F;
+	      	font-weight: 300;
+	  	}
+		body {
+		  	font-size: 1rem;
+		  	font-family: 'Open Sans', serif;
+		  	font-weight: 400;
+		  	fill: #8C8C8C;
+		  	text-align: left;
+      	background-color: #fefdfa;
+		}
+    .hidden {
+        display: none;
+    }
+    div.tooltip {
+        color: #000000;
+        background-color: #fffcf4;
+        padding: .2em;
+        text-shadow: #f5f5f5 0 1px 0;
+        border-radius: 4px;
+        opacity: 0.75;
+        position: absolute;
+    }
+  
+    body { margin:0;position:fixed;top:0;right:0;bottom:0;left:0; }
+  </style>
 </head>
+
+<div>
+  <input id="slider" type="range" value="1" min="1" max="100" step="1" />
+  <span id="Semaine">Semaine</span>
+</div>
+	
 <body>
-  <p> Yeahhhh first page <p>
+  <script>
+
+		var width = 760,
+  		  height = 500;
+    
+    var tooltip = d3.select('body').append('div')
+            .attr('class', 'hidden tooltip');
+    
+		var svg = d3.select( "body" )
+  		.append( "svg" )
+		  .attr( "width", width )
+		  .attr( "height", height );
+    
+    var g = svg.append( "g" ); 
+    
+    var projection = d3.geo.conicConformal()
+    			.translate([width/3 + 25, height/2])
+    			.center([1.2, 45.6]).scale(2800);
+    
+    var path = d3.geo.path()
+                 .projection(projection);
+    
+    svg.append("text")
+        .attr("x", width-120)             
+        .attr("y", height/2 - 50)
+        .attr("text-anchor", "middle")  
+        .style("font-size", "18px") 
+        .style("text-decoration", "underline")  
+        .text("Évolution de la grippe ");
+    svg.append("text")
+        .attr("x", width-120)             
+        .attr("y", height/2 - 10)
+        .attr("text-anchor", "middle")  
+        .style("font-size", "18px") 
+        .style("text-decoration", "underline")  
+        .text("en France entre 2003 et 2015");
+///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////// Process ///////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+    
+    queue()   // permet de charger les fichiers de manière asynchrone
+  .defer(d3.json, "./data/regions.json")
+  .defer(d3.csv, "./data/GrippeFrance2003-15.csv")
+  .await(processData)
+
+    function processData(error, regions, grippe) {
+      
+      // Affectation des données aux régions
+      var min = 0
+      var max = 0  
+    	for(var jourgrippe of grippe) {
+        var dataRegion = jourgrippe["regions"];
+        var value = d3.values(jourgrippe);
+
+        value.splice(0, 1);
+        value.splice(value.length+2, 1);
+				console.log(value.length)
+        // Recherche de la région dans le GeoJson
+        for (var region of regions.features) {
+          
+          var jsonRegion = region.properties.nom;
+          if (dataRegion == jsonRegion) {
+            //On injecte la valeur de la région dans le json
+            region.properties.values = value;
+            value_temp = value
+            tempmax = d3.max(value_temp.map(Number))
+            if (tempmax > max) {max=tempmax}
+            break;
+            }
+          }
+       }
+      max = 2600; // pour garder les graduations constantes
+			
+  //Base the color scale on average 
+      var colorScale = d3.scale.linear()
+        .domain([min, max/2, max])
+        .range(["#398ecf", "#ffff8c", "#e62d30"])
+        .interpolate(d3.interpolateHcl);
+      
+//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////// Carte ////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+      
+      drawMap(regions, 0)
+      
+      function drawMap(regions, currentWeek) {
+        carte = svg.selectAll("path")
+          .data(regions.features);
+        
+        // Première carte
+				if (currentWeek == 0){
+        	carte.enter()
+          	.append("path")
+          	.attr("d", path)
+          	.attr("class", "enter")
+        }
+        
+        // Màj Carte
+        carte
+          .attr("class", "update")
+          .style("fill", function(d) {
+          try { var value1 = d.properties.values[currentWeek];
+          }
+          catch(err) { }
+                    
+          if (value1) {
+            return colorScale(value1);
+          } 
+          else { 
+            return "#d1d1d1";
+          }
+        	})
+          .on('mousemove', function(d) {
+          var mouse = d3.mouse(svg.node()).map(function(d) {
+            return parseInt(d);
+          });
+          	d3.select(this).style("opacity", "0.4");
+           	try { var value1 = d.properties.values[currentWeek];
+          	}
+          	catch(err) { }
+          	if (value1){
+            	tooltip.classed('hidden', false)
+              .attr('style', 'left:' + (mouse[0] + 10) +
+                    'px; top:' + (mouse[1] - 20) + 'px')
+              .html(d.properties.nom +"\n - \n" + value1 + "\n cas");
+          	}	
+          	else{tooltip.classed('hidden', false)
+            	.attr('style', 'left:' + (mouse[0] + 10) +
+                  'px; top:' + (mouse[1] - 20) + 'px')
+            	.html(d.properties.nom + "\n - \n pas de données");}
+        	})
+          .on('mouseout', function() {
+          d3.select(this).transition().duration(300).style("opacity", "1")
+          tooltip.classed('hidden', true);
+        })
+      };
+      
+
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////// Couleurs et légende /////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+      // Fait à partir de http://www.visualcinnamon.com/2016/05/smooth-color-legend-d3-svg-gradient.html
+  //Extra scale since the color scale is interpolated
+  var tempScale = d3.scale.linear()
+    .domain([min, max])
+    .range([0, width]);
+
+  //Calculate the variables for the temp gradient
+  var numStops = 10;
+  tempRange = tempScale.domain();
+  tempRange[2] = tempRange[1] - tempRange[0];
+  tempPoint = [];
+  for(var i = 0; i < numStops; i++) {
+    tempPoint.push(i * tempRange[2]/(numStops-1) + tempRange[0]);
+  }//for i
+
+  //Create the gradient
+  svg.append("defs")
+    .append("linearGradient")
+    .attr("id", "legend-weather")
+    .attr("x1", "0%").attr("y1", "0%")
+    .attr("x2", "100%").attr("y2", "0%")
+    .selectAll("stop") 
+    .data(d3.range(numStops))                
+    .enter().append("stop") 
+    .attr("offset", function(d,i) { return tempScale( tempPoint[i] )/width; })   
+    .attr("stop-color", function(d,i) { return colorScale( tempPoint[i] ); });   
+
+  var legendWidth = 450;
+
+  //Color Legend container
+  var legendsvg = svg.append("g")
+    .attr("class", "legendWrapper")
+    .attr("transform", "translate(" + 430 + "," + (400 + 40) + ")");
+
+  //Draw the Rectangle
+  legendsvg.append("rect")
+    .attr("class", "legendRect")
+    .attr("x", -legendWidth/2-110)
+    .attr("y", 0)
+    .attr("rx", 8/2)
+    .attr("width", legendWidth)
+    .attr("height", 8)
+    .style("fill", "url(#legend-weather)");
+
+  //Append title
+  legendsvg.append("text")
+    .attr("class", "legendTitle")
+    .attr("x", -100)
+    .attr("y", -10)
+    .style("text-anchor", "middle")
+    .text("Nombre de cas recensés");
+
+  //Set scale for x-axis
+  var xScale = d3.scale.linear()
+     .range([-legendWidth/2-100, legendWidth/2-110])
+     .domain([0,max] );
+
+  //Define x-axis
+  var xAxis = d3.svg.axis()
+      .orient("bottom")
+      .ticks(10)
+      .tickFormat(function(d) { return d ; })
+      .scale(xScale);
+
+  //Set up X axis
+  legendsvg.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(0," + (8) + ")")
+    .call(xAxis);
+}
+
+  </script>
 </body>
-</html>
