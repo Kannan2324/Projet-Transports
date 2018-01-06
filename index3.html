@@ -27,13 +27,35 @@
 			opacity: 0.9;
 			position: absolute;
 		}
+		
+		.background {
+			fill: none;
+			pointer-events: all;
+		}
+
+		.feature {
+			fill: #ccc;
+			cursor: pointer;
+		}
+
+		.feature.active {
+			fill: orange;
+		}
+
+		.mesh {
+			fill: none;
+			stroke: #fff;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+		}
 	</style>
 </head>
 
 <body>
 	<script>
 		var width = 700,
-				height = 580;
+				height = 580,
+				active = d3.select(null);
 
 		var svg = d3.select( "body" )
 			.append( "svg" )
@@ -41,26 +63,30 @@
 			.attr( "height", height );
 		
 		var color = d3.scaleQuantize()
-				 .range(["rgb(237,248,233)", "rgb(186,228,179)",
-				 "rgb(116,196,118)", "rgb(49,163,84)", "rgb(0,109,44)"]);
+			.range(["rgb(237,248,233)", "rgb(186,228,179)",
+			"rgb(116,196,118)", "rgb(49,163,84)", "rgb(0,109,44)"]);
 		
 		//On centre sur la France
 		var projection = d3.geoConicConformal()
 			.center([2.454071, 46.279229])
 			.scale(2800)
 			// sans la commande enlève la Corse mais centre la France!
-			//.translate([width/2, height/2]);
+			.translate([width/2, height/2]);
 		
 
 		var path = d3.geoPath() // d3.geo.path avec d3 version 3
-								 .projection(projection);
+			.projection(projection);
 		
 		var tooltip = d3.select('body')
-					.append('div')
-					.attr('class', 'hidden tooltip');
+			.append('div')
+			.attr('class', 'hidden tooltip');
+		
 		var geoPath = d3.geoPath()
-		 .projection(projection)
-		 .pointRadius(2);
+			.projection(projection)
+			.pointRadius(2);
+
+		var g = svg.append("g")
+			.style("stroke-width", "1.5px");
 
 		d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions.geojson", function(json) {
 			svg.selectAll("path")
@@ -70,6 +96,8 @@
 				.attr("fill","#888")
 				.attr("stroke","#fff")
 				.attr("d",path)
+				.attr("class", "feature")
+				.on("click", clicked)
 				.on('mousemove', function(d) {
 					var mouse = d3.mouse(svg.node()).map(function(d) {
 						return parseInt(d);
@@ -83,6 +111,10 @@
 				.on('mouseout', function() {
 					tooltip.classed('hidden', true);
 					});
+
+				svg.append("path")
+					.attr("class", "mesh")
+					.attr("d", path);
 			
 			d3.json("https://raw.githubusercontent.com/Kannan2324/Projet-Transports/master/data/liste-des-gares.geojson", function(jsonGare) {
 				var liste_gare = svg.append("svg");
@@ -107,6 +139,34 @@
 			})
 		});
 		
+		function clicked(d) {
+			if (active.node() === this) return reset();
+			active.classed("active", false);
+			active = d3.select(this).classed("active", true);
+
+			var bounds = path.bounds(d),
+				dx = bounds[1][0] - bounds[0][0],
+				dy = bounds[1][1] - bounds[0][1],
+				x = (bounds[0][0] + bounds[1][0]) / 4,
+				y = (bounds[0][1] + bounds[1][1]) / 4,
+				scale = .9 / Math.max(dx / width, dy / height),
+				translate = [width / 2 - scale * x, height / 2 - scale * y];
+			console.log(x,y,dx,dy)
+			svg.transition()
+				.duration(750)
+				.style("stroke-width", 1.5 / scale + "px")
+				.attr("transform", "translate(" + translate + ")scale(" + scale + ")");
+		}
+
+		function reset() {
+			active.classed("active", false);
+			active = d3.select(null);
+
+			svg.transition()
+				.duration(750)
+				.style("stroke-width", "1.5px")
+				.attr("transform", "");
+		}
 	</script>
 </body>
 
