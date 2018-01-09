@@ -42,6 +42,9 @@ var geoPath = d3.geoPath()
 var g = svg.append("g")
 	.style("stroke-width", "1.5px");
 
+var dep_auvergne_rhone_alpes = ["Allier","Puy-de-Dôme","Cantal","Loire","Haute-Loire","Ardèche","Rhône","Drôme",
+	"Isère","Ain","Savoie","Haute-Savoie"]
+
 d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions.geojson", function(json) {
 	svg.selectAll("path")
 		.data(json.features)
@@ -148,9 +151,33 @@ d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/r
 			tooltip.classed('hidden', true);
 			});
 
-		svg2.append("path")
-			.attr("class", "mesh")
-			.attr("d", path);
+	d3.json("https://raw.githubusercontent.com/Kannan2324/Projet-Transports/master/data/liste-des-gares.geojson", function(jsonGare) {
+		var liste_gare2 = svg2.append("svg");
+		liste_gare2.selectAll("path")
+		.data(jsonGare.features.filter(function(d){
+			return dep_auvergne_rhone_alpes.indexOf(d.properties.departement) !== -1;
+		}))
+		.enter()
+		.append("path")
+		.attr("fill","#b42e6b")
+		.attr("d", geoPath2)
+		.on('mousemove', function(d) {
+			var mouse2 = d3.mouse(svg2.node()).map(function(d) {
+				return parseInt(d);
+			});
+			tooltip.classed('hidden', false)
+				.attr('style', 'left:' + (mouse2[0] + 15 + width) +
+					'px; top:' + (mouse2[1] - 35 + width) + 'px;background-color: #fff')
+				.html(d.properties.libelle_gare);
+			})
+		.on('mouseout', function() {
+			tooltip.classed('hidden', true);
+			});;
+	})
+
+	svg2.append("path")
+		.attr("class", "mesh")
+		.attr("d", path);
 	
 	
 });
@@ -198,6 +225,30 @@ d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/d
 		.on('mouseout', function() {
 			tooltip.classed('hidden', true);
 			});
+
+	d3.json("https://raw.githubusercontent.com/Kannan2324/Projet-Transports/master/data/liste-des-gares.geojson", function(jsonGare) {
+		var liste_gare3 = svg3.append("svg");
+		liste_gare3.selectAll("path")
+		.data(jsonGare.features.filter(function(d){
+			return d.properties.departement === "Rhône";
+		}))
+		.enter()
+		.append("path")
+		.attr("fill","#b42e6b")
+		.attr("d", geoPath3)
+		.on('mousemove', function(d) {
+			var mouse3 = d3.mouse(svg3.node()).map(function(d) {
+				return parseInt(d);
+			});
+			tooltip.classed('hidden', false)
+				.attr('style', 'left:' + (mouse3[0] + 15 + width*2) +
+					'px; top:' + (mouse3[1] - 35 + width*2) + 'px;background-color: #fff')
+				.html(d.properties.libelle_gare);
+			})
+		.on('mouseout', function() {
+			tooltip.classed('hidden', true);
+			});;
+	})
 
 		svg3.append("path")
 			.attr("class", "mesh")
