@@ -42,6 +42,22 @@ var geoPath = d3.geoPath()
 var g = svg.append("g")
 	.style("stroke-width", "1.5px");
 
+var reg_dep_France = {
+	"Auvergne-Rhône-Alpes":["Allier","Puy-de-Dôme","Cantal","Loire","Haute-Loire","Ardèche","Rhône","Drôme","Isère","Ain","Savoie","Haute-Savoie"],
+	"Bourgogne-Franche-Comté":["Saône-et-Loire","Doubs","Côte-d'Or","Yonne","Jura","Haute-Saône","Nièvre","Territoire de Belfort"],
+	"Bretagne":["Côtes-d'Armor","Finistère","Ille-et-Vilaine","Morbihan"],
+	"Centre-Val de Loire":["Cher","Eure-et-Loir","Indre","Indre-et-Loire","Loir-et-Cher","Loiret"],
+	"Corse":["Haute-Corse","Corse-du-Sud"],
+	"Grand Est":["Ardennes","Aube","Marne","Haute-Marne","Meurthe-et-Moselle","Meuse","Moselle","Bas-Rhin","Haut-Rhin","Vosges"],
+	"Hauts-de-France":["Aisne","Nord","Oise","Pas-de-Calais","Somme"],
+	"Île-de-France":["Paris","Seine-et-Marne","Yvelines","Essonne","Hauts-de-Seine","Seine-Saint-Denis","Val-de-Marne","Val-d'Oise"],
+	"Normandie":["Calvados","Eure","Manche","Orne","Seine-Maritime"],
+	"Nouvelle-Aquitaine":["Charente","Charente-Maritime","Corrèze","Creuse","Dordogne","Gironde","Landes","Lot-et-Garonne","Pyrénées-Atlantiques","Deux-Sèvres","Vienne","Haute-Vienne"],
+	"Occitanie":["Ariège","Aude","Aveyron","Gard","Haute-Garonne","Gers","Hérault","Lot","Lozère","Hautes-Pyrénées","Pyrénées-Orientales","Tarn","Tarn-et-Garonne"],
+	"Pays de la Loire":["Loire-Atlantique","Maine-et-Loire","Mayenne","Sarthe","Vendée"],
+	"Provence-Alpes-Côte d'Azur":["Alpes-de-Haute-Provence","Hautes-Alpes","Alpes-Maritimes","Bouches-du-Rhône","Var","Vaucluse"]
+}
+
 var dep_auvergne_rhone_alpes = ["Allier","Puy-de-Dôme","Cantal","Loire","Haute-Loire","Ardèche","Rhône","Drôme",
 	"Isère","Ain","Savoie","Haute-Savoie"]
 
@@ -97,9 +113,23 @@ d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/r
 });
 
 function clicked(d) {
+	console.log(this);
 	if (active.node() === this) return reset();
 	active.classed("active", false);
 	active = d3.select(this).classed("active", true);
+
+	var bounds = path.bounds(d),
+	dx = bounds[1][0] - bounds[0][0],
+	dy = bounds[1][1] - bounds[0][1],
+	x = (bounds[0][0] + bounds[1][0]) / 2,
+	y = (bounds[0][1] + bounds[1][1]) / 2,
+	scale = .9 / Math.max(dx / width, dy / height),
+	translate = [width / 2 - scale * x, height / 2 - scale * y];
+
+	g.transition()
+		.duration(750)
+		.style("stroke-width", 1.5 / scale + "px")
+		.attr("transform", "translate(" + translate + ")scale(" + scale + ")");
 }
 
 function reset() {
@@ -167,7 +197,7 @@ d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/r
 			});
 			tooltip.classed('hidden', false)
 				.attr('style', 'left:' + (mouse2[0] + 15 + width) +
-					'px; top:' + (mouse2[1] - 35 + width) + 'px;background-color: #fff')
+					'px; top:' + (mouse2[1] - 35) + 'px;background-color: #fff')
 				.html(d.properties.libelle_gare);
 			})
 		.on('mouseout', function() {
@@ -242,7 +272,7 @@ d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/d
 			});
 			tooltip.classed('hidden', false)
 				.attr('style', 'left:' + (mouse3[0] + 15 + width*2) +
-					'px; top:' + (mouse3[1] - 35 + width*2) + 'px;background-color: #fff')
+					'px; top:' + (mouse3[1] - 35) + 'px;background-color: #fff')
 				.html(d.properties.libelle_gare);
 			})
 		.on('mouseout', function() {
