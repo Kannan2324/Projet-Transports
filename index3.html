@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
 	<style>
 		body {
 			margin:0;
@@ -51,13 +53,34 @@
 	</style>
 </head>
 
-<body>
+<body class="w3-light-grey">
+	<div class="w3-row">
+		<div class="w3-container w3-col w3-third div1">
+			<h2>Country</h2>
+		</div>
+		<div class="w3-container w3-col w3-third div2 w3-border-left">
+			<h2>Region</h2>
+		</div>
+		<div class="w3-container w3-col w3-third div3 w3-border-left">
+			<h2>Department</h2>
+		</div>
+	</div>
 	<script>
-		var width = 700,
+		var width = window.innerWidth/3,
 				height = 580,
 				active = d3.select(null);
 
-		var svg = d3.select( "body" )
+		var svg = d3.select( ".div1" )
+			.append( "svg" )
+			.attr( "width", width )
+			.attr( "height", height );
+
+		var svg2 = d3.select( ".div2" )
+			.append( "svg" )
+			.attr( "width", width )
+			.attr( "height", height );
+
+		var svg3 = d3.select( ".div3" )
 			.append( "svg" )
 			.attr( "width", width )
 			.attr( "height", height );
@@ -72,7 +95,6 @@
 			.scale(2800)
 			// sans la commande enlève la Corse mais centre la France!
 			.translate([width/2, height/2]);
-		
 
 		var path = d3.geoPath() // d3.geo.path avec d3 version 3
 			.projection(projection);
@@ -147,13 +169,13 @@
 			var bounds = path.bounds(d),
 				dx = bounds[1][0] - bounds[0][0],
 				dy = bounds[1][1] - bounds[0][1],
-				x = (bounds[0][0] + bounds[1][0]) / 4,
-				y = (bounds[0][1] + bounds[1][1]) / 4,
+				x = (bounds[0][0] + bounds[1][0]) / 2,
+				y = (bounds[0][1] + bounds[1][1]) / 2,
 				scale = .9 / Math.max(dx / width, dy / height),
 				translate = [width / 2 - scale * x, height / 2 - scale * y];
-			console.log(x,y,dx,dy)
+			console.log(x,y )
 			svg.transition()
-				.duration(750)
+				.duration(800)
 				.style("stroke-width", 1.5 / scale + "px")
 				.attr("transform", "translate(" + translate + ")scale(" + scale + ")");
 		}
@@ -163,7 +185,7 @@
 			active = d3.select(null);
 
 			svg.transition()
-				.duration(750)
+				.duration(800)
 				.style("stroke-width", "1.5px")
 				.attr("transform", "");
 		}
