@@ -95,22 +95,22 @@ var dep_auvergne_rhone_alpes = ["Allier","Puy-de-Dôme","Cantal","Loire","Haute-
 
 function convertCase(str){
 	str = str.toLowerCase();
-	str.replace(" ", "-");
-	str.replace("'", "-");
-	str.replace("à", "a");
-	str.replace("â", "a");
-	str.replace("é", "e");
-	str.replace("è", "e");
-	str.replace("ê", "e");
-	str.replace("ë", "e");
-	str.replace("î", "i");
-	str.replace("ï", "i");
-	str.replace("ç", "c");
-	str.replace("ô", "o");
-	str.replace("ö", "o");
-	str.replace("û", "u");
-	str.replace("ù", "u");
-	str.replace("ü", "u");
+	str = str.replace(" ", "-");
+	str = str.replace("'", "-");
+	str = str.replace("à", "a");
+	str = str.replace("â", "a");
+	str = str.replace("é", "e");
+	str = str.replace("è", "e");
+	str = str.replace("ê", "e");
+	str = str.replace("ë", "e");
+	str = str.replace("î", "i");
+	str = str.replace("ï", "i");
+	str = str.replace("ç", "c");
+	str = str.replace("ô", "o");
+	str = str.replace("ö", "o");
+	str = str.replace("û", "u");
+	str = str.replace("ù", "u");
+	str = str.replace("ü", "u");
 	return str;
 };
 
