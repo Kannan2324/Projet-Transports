@@ -64,6 +64,7 @@ partdieu = Counter(natureObjPartDieu)
 print(perrache)
 print(partdieu)
 
+
 """
 Ce parser retourne le nombre d'objets trouvés par type pour les gares du rhône.
 On s'en rend compte que sur l'année 2016, seul deux gares ont des données sur les objets
@@ -72,3 +73,33 @@ Counter({'Bagagerie: sacs, valises, cartables': 573, 'Porte-monnaie / portefeuil
 Counter({'Bagagerie: sacs, valises, cartables': 910, 'Appareils électroniques, informatiques, appareils photo': 415, 'Porte-monnaie / portefeuille, argent, titres': 244, 'Vêtements, chaussures': 170, "Pièces d'identités et papiers personnels": 115, 'Optique': 87, 'Clés, porte-clés, badge magnétique': 78, 'Livres, articles de papéterie': 43, 'Divers': 38, 'Vélos, trotinettes, accessoires 2 roues': 26, 'Vélos, trottinettes, accessoires 2 roues': 26, "Articles d'enfants, de puériculture": 15, 'Articles de sport, loisirs, camping': 15, 'Parapluies': 12, 'Bijoux, montres': 12, 'Articles médicaux': 10, 'Instruments de musique': 5})
 
 """
+
+donnee_perrache = [573,362,316,260,93,47,47,45,24,24,15,9,9,5,4,4,1]
+donnee_partdieu = [910,244,115,415,170,87,43,78,26,26,38,15,15,10,5,12,12]
+print(sum(donnee_perrache))
+
+def calcul(x): return (x/ sum(donnee_perrache)) *100
+per_perrache = list(map(calcul,donnee_perrache))
+format_perrache = [ '%.2f' % elem for elem in per_perrache ]
+print(format_perrache)
+
+"""
+Pourcentage des objets trouvés sur la gare perrache
+['31.18', '19.70', '17.19', '14.15', '5.06', '2.56', '2.56', '2.45', '1.31', '1.31', '0.82', '0.49', '0.49', '0.27', '0.22', '0.22', '0.05']
+"""
+
+def calcul2(x): return (x/ sum(donnee_partdieu)) *100
+per_partdieu = list(map(calcul2,donnee_partdieu))
+format_partdieu = [ '%.2f' % elem for elem in per_partdieu ]
+print(format_partdieu)
+
+"""
+['40.97', '10.99', '5.18', '18.69', '7.65', '3.92', '1.94', '3.51', '1.17', '1.17', '1.71', '0.68', '0.68', '0.45', '0.23', '0.54', '0.54']
+"""
+
+
+
+
+
+
+
