@@ -39,3 +39,9 @@ div.tooltip {
 	stroke-linecap: round;
 	stroke-linejoin: round;
 }
+
+ iframe.noScrolling{
+           width: 250px; /*or any other size*/
+           height: 300px; /*or any other size*/
+           overflow: hidden;
+}
