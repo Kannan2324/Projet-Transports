@@ -25,6 +25,11 @@ var svg3 = d3.select( ".div3" )
 	.attr( "width", width )
 	.attr( "height", height );
 
+var pie = d3.select( ".pie" )
+	.append( "svg" )
+	.attr( "width", 960 )
+	.attr( "height", height );
+
 //On centre sur la France
 var projection = d3.geoConicConformal()
 	.center([2.454071, 46.279229])
