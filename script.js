@@ -88,14 +88,14 @@ var reg_dep_France = {
 	"Occitanie":["Ariège","Aude","Aveyron","Gard","Haute-Garonne","Gers","Hérault","Lot","Lozère","Hautes-Pyrénées","Pyrénées-Orientales","Tarn","Tarn-et-Garonne"],
 	"Pays de la Loire":["Loire-Atlantique","Maine-et-Loire","Mayenne","Sarthe","Vendée"],
 	"Provence-Alpes-Côte d'Azur":["Alpes-de-Haute-Provence","Hautes-Alpes","Alpes-Maritimes","Bouches-du-Rhône","Var","Vaucluse"]
-}
+};
 
 var dep_auvergne_rhone_alpes = ["Allier","Puy-de-Dôme","Cantal","Loire","Haute-Loire","Ardèche","Rhône","Drôme",
-	"Isère","Ain","Savoie","Haute-Savoie"]
+	"Isère","Ain","Savoie","Haute-Savoie"];
 
 function convertCase(str){
 	str = str.toLowerCase();
-	str = str.replace(" ", "-");
+	str = str.replace(/ /g, "-");
 	str = str.replace("'", "-");
 	str = str.replace("à", "a");
 	str = str.replace("â", "a");
@@ -115,16 +115,16 @@ function convertCase(str){
 };
 
 function clicked(d) {
-	console.log(this.__data__.properties);
 	let clickedName = this.__data__.properties.nom;
 	let depCode = this.__data__.properties.code;
+
 	if (active.node() === this) return reset();
 	active.classed("active", false);
 	active = d3.select(this).classed("active", true);
-	let classes = this.parentNode.parentNode.classList
+	let classes = this.parentNode.parentNode.classList;
+
 	if (classes[3] == "div2"){
-		let url = "https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/departements/"+depCode+"-"+convertCase(clickedName)+"/arrondissements-"+depCode+"-"+convertCase(clickedName)+".geojson"
-		console.log(url)
+		let url = "https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/departements/"+depCode+"-"+convertCase(clickedName)+"/arrondissements-"+depCode+"-"+convertCase(clickedName)+".geojson";
 		d3.json(url, function(json) {
 			svg3.selectAll("*").remove();
 			svg3.selectAll("path")
@@ -177,6 +177,60 @@ function clicked(d) {
 				svg3.append("path")
 					.attr("class", "mesh")
 					.attr("d", path);
+		});
+	} else if (classes[3] == "div1"){
+		d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions/"+convertCase(clickedName)+"/departements-"+convertCase(clickedName)+".geojson", function(json) {
+			svg2.selectAll("*").remove();
+			svg2.selectAll("path")
+				.data(json.features)
+				.enter()
+				.append("path")
+				.attr("fill","#888")
+				.attr("stroke","#fff")
+				.attr("d",path2)
+				.attr("class", "feature")
+				.on("click", clicked)
+				.on('mousemove', function(d) {
+					var mouse = d3.mouse(svg2.node()).map(function(d) {
+						return parseInt(d);
+					});
+					tooltip.classed('hidden', false)
+						.attr('style', 'left:' + (mouse[0] + 15 + width) +
+							'px; top:' + (mouse[1] - 35) + 'px;background-color: #f88')
+					//console.log(d.properties.nom)
+						.html('<strong>'+d.properties.nom+'</strong>');
+					})
+				.on('mouseout', function() {
+					tooltip.classed('hidden', true);
+					});
+
+			d3.json("https://raw.githubusercontent.com/Kannan2324/Projet-Transports/master/data/liste-des-gares.geojson", function(jsonGare) {
+				var liste_gare2 = svg2.append("svg");
+				liste_gare2.selectAll("path")
+				.data(jsonGare.features.filter(function(d){
+					return reg_dep_France[clickedName].indexOf(d.properties.departement) !== -1;
+				}))
+				.enter()
+				.append("path")
+				.attr("fill","#b42e6b")
+				.attr("d", geoPath2)
+				.on('mousemove', function(d) {
+					var mouse2 = d3.mouse(svg2.node()).map(function(d) {
+						return parseInt(d);
+					});
+					tooltip.classed('hidden', false)
+						.attr('style', 'left:' + (mouse2[0] + 15 + width) +
+							'px; top:' + (mouse2[1] - 35) + 'px;background-color: #fff')
+						.html(d.properties.libelle_gare);
+					})
+				.on('mouseout', function() {
+					tooltip.classed('hidden', true);
+					});;
+			})
+
+			svg2.append("path")
+				.attr("class", "mesh")
+				.attr("d", path);
 		});
 	};
 
@@ -255,60 +309,7 @@ d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/r
 // #######################################################@
 // ##### Région
 
-d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions/auvergne-rhone-alpes/departements-auvergne-rhone-alpes.geojson", function(json) {
-	svg2.selectAll("path")
-		.data(json.features)
-		.enter()
-		.append("path")
-		.attr("fill","#888")
-		.attr("stroke","#fff")
-		.attr("d",path2)
-		.attr("class", "feature")
-		.on("click", clicked)
-		.on('mousemove', function(d) {
-			var mouse = d3.mouse(svg2.node()).map(function(d) {
-				return parseInt(d);
-			});
-			tooltip.classed('hidden', false)
-				.attr('style', 'left:' + (mouse[0] + 15 + width) +
-					'px; top:' + (mouse[1] - 35) + 'px;background-color: #f88')
-			//console.log(d.properties.nom)
-				.html('<strong>'+d.properties.nom+'</strong>');
-			})
-		.on('mouseout', function() {
-			tooltip.classed('hidden', true);
-			});
 
-	d3.json("https://raw.githubusercontent.com/Kannan2324/Projet-Transports/master/data/liste-des-gares.geojson", function(jsonGare) {
-		var liste_gare2 = svg2.append("svg");
-		liste_gare2.selectAll("path")
-		.data(jsonGare.features.filter(function(d){
-			return dep_auvergne_rhone_alpes.indexOf(d.properties.departement) !== -1;
-		}))
-		.enter()
-		.append("path")
-		.attr("fill","#b42e6b")
-		.attr("d", geoPath2)
-		.on('mousemove', function(d) {
-			var mouse2 = d3.mouse(svg2.node()).map(function(d) {
-				return parseInt(d);
-			});
-			tooltip.classed('hidden', false)
-				.attr('style', 'left:' + (mouse2[0] + 15 + width) +
-					'px; top:' + (mouse2[1] - 35) + 'px;background-color: #fff')
-				.html(d.properties.libelle_gare);
-			})
-		.on('mouseout', function() {
-			tooltip.classed('hidden', true);
-			});;
-	})
-
-	svg2.append("path")
-		.attr("class", "mesh")
-		.attr("d", path);
-	
-	
-});
 
 // ########################################################
 // ###### Departement
