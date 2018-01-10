@@ -6,7 +6,7 @@ Sébastien Delolme-Sabatier
 ShangNong Hu
 Valentin Reymond
 
-16/11
+16/11/17
 
 Premier cours sur le projet de visusalisation de données sur les transports:
 
@@ -22,7 +22,7 @@ Premier cours sur le projet de visusalisation de données sur les transports:
 			- Déclaration de pertes d'objets dans les gares
 			- Objets trouvés dans les gares
 
-23/11
+23/11/17
 
 Objectif: avoir désigné plusieurs prototype de visualisation sur les "Design Sheets"
 
@@ -34,7 +34,7 @@ Objectif: avoir désigné plusieurs prototype de visualisation sur les "Design S
 Autres idées? A réfléchir
 
 
-03/12
+03/12/17
 
 Objectif de travail de projet: Peer review
 	==> Lire l'article de présentation du projet d'un autre groupe et formuler une critique.
@@ -45,9 +45,52 @@ Objectif de travail de projet: Peer review
 Première lecture de l'article, et premières critiques
 
 
-07/12
+07/12/17
 
 Objectif de la séance: - Retour sur l'analyse de notre Peer-review par le groupe 17
-					   - Début du code pour le projet
+					   - Début du code pour le projet (premières idées avec blockbuilder)
+
+05/01/18
+
+	Commencement du code du projet (dossier et structure du projet)
+	=> Premier affichage de la carte de France en utilisant le fichier de geojson avec le nouveau découpage des régions Françaises
+	=> Ajout d'un template
+	=> Ajout du fichier contenant la liste des gares en France
+
+	=> Merge des stations de gares de train sur la carte de France
+	=> Affichage de ces stations par des points d'une certaine couleur
+
+	=> Ajout d'un tooltip pour afficher le nom de la région sur laquelle le curseur se trouve
+
+	=> Ajustement de la taille des points des gares sur la carte pour que l'ensemble des points soit visibles et sélectionnable
 
 
+
+06/01/18
+	
+	=> Ajout d'un second tooltip sur la carte de France, quand on passe le curseur sur les points des gares Françaises, on a un nouveau tooltip
+	
+	=> Début du chargement de la région Auvergne-Rhône-Alpes avec découpage par département
+	=> Positionnement des gares uniquement sur la région Auvergne-Rhône-Alpes
+	=> Première tentative de zoom. Ce qu'on veut: quand on clique sur une région spécifique sur la carte de la France on zoom uniquement sur la région (seule elle est affichée)
+
+09/01/18
+
+	=> Séparation de la page principale HTML en 3 svg distinct: Country / Region / Department
+
+	=> Placement de la carte de la France (découpage région) dans le svg Country
+	=> Placement de la région Auvergne-Rhône-Alpes (découpage département) dans le svg Region
+	=> Création et Placement du département Rhône (découpage arrondissement, ville de lyon / restedu Rhône) dans le svg Department
+
+	=> Positionné les gares sur le département Rhône
+
+	=> Création d'un parser pour obtenir des informations sur les objets trouvés en 2016 en vue de la création d'un donut chart.
+
+	=> Affichage uniquement de la France dans Country au chargement de la page. Quand on clique sur la région Rhône-Alpes, affiche dans le svg Region la dite région avec les gares de cette région. Quand on clique sur le département Rhône, affiche le Rhône dans le svg Department. Problème de ce zoom, il est centré sur la région et le département d'intérêt, c'est-à-dire la région Auvergne-Rhône-Alpes et Rhône. Si on clique sur une autre région ou autre département, on observera un décalement.
+
+10/01/18
+	
+	=> Finalisation du donut chart, il affiche le pourcentage par type d'objets trouvés dans les gare partdieu et perrache. Une transition est réalisé entre les deux donut chart
+	=> Finalisation de l'histogramme renseignant le nombre d'objets restitué par rapport aux objets trouvés dans toute la France
+	=> Intégration des deux graphiques dans la page du projet
+	=> Quelques améliorations
